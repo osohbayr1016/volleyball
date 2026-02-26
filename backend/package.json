@@ -1,19 +1,15 @@
 {
-  "name": "volleyball-api",
-  "version": "0.0.1",
-  "private": true,
+  "name": "backend",
+  "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "db:migrate": "wrangler d1 migrations apply volleyball-db",
-    "db:migrate:local": "wrangler d1 migrations apply volleyball-db --local",
-    "types": "wrangler types"
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
-    "hono": "^4"
+    "hono": "^4.12.2"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4",
-    "wrangler": "^4"
+    "wrangler": "^4.4.0"
   }
 }

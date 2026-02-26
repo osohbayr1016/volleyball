@@ -1,16 +1,9 @@
-import { Hono } from "hono";
-import { cors } from "hono/cors";
-import type { AppEnv } from "./types";
-import health from "./routes/health";
+import { Hono } from 'hono'
 
-const app = new Hono<AppEnv>();
+const app = new Hono()
 
-app.use("/*", cors());
+app.get('/', (c) => {
+  return c.text('Hello Hono!')
+})
 
-app.route("/health", health);
-
-app.get("/", (c) => {
-  return c.json({ message: "Volleyball API" });
-});
-
-export default app;
+export default app
