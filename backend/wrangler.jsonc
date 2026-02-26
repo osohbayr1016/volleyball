@@ -1,0 +1,18 @@
+{
+  "name": "volleyball-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-01-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "volleyball-db",
+      "database_id": "LOCAL_DB_ID"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BUCKET",
+      "bucket_name": "volleyball-images"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "volleyball-api",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate": "wrangler d1 migrations apply volleyball-db",
+    "db:migrate:local": "wrangler d1 migrations apply volleyball-db --local",
+    "types": "wrangler types"
+  },
+  "dependencies": {
+    "hono": "^4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4",
+    "wrangler": "^4"
+  }
+}
