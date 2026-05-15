@@ -19,6 +19,7 @@ type EventRow = {
   set_id: string;
   x: number;
   y: number;
+  type?: string;
   created_at: number;
 };
 
@@ -41,6 +42,7 @@ export type Event = {
   setId: string;
   x: number;
   y: number;
+  type: string;
   createdAt: number;
 };
 
@@ -71,6 +73,7 @@ export async function ensureSchema(env: AppEnv["Bindings"]) {
         set_id TEXT NOT NULL,
         x REAL NOT NULL,
         y REAL NOT NULL,
+        type TEXT DEFAULT 'Spike',
         created_at INTEGER NOT NULL,
         FOREIGN KEY (set_id) REFERENCES sets(id) ON DELETE CASCADE
       )`),
@@ -80,6 +83,12 @@ export async function ensureSchema(env: AppEnv["Bindings"]) {
     .catch(() => {
       // If schema already exists or migrations race, ignore.
     });
+
+  try {
+    await db.prepare("ALTER TABLE events ADD COLUMN type TEXT DEFAULT 'Spike'").run();
+  } catch {
+    // Ignore if column already exists
+  }
 }
 
 export function mapMatch(row: MatchRow): Match {
@@ -106,6 +115,7 @@ export function mapEvent(row: EventRow): Event {
     setId: row.set_id,
     x: row.x,
     y: row.y,
+    type: row.type || "Spike",
     createdAt: row.created_at,
   };
 }

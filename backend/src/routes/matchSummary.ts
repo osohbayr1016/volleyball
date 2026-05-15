@@ -25,7 +25,7 @@ matchSummary.get("/:matchId", async (c) => {
   }
 
   const eventsResult = await c.env.DB.prepare(
-    `SELECT e.id, e.set_id, e.x, e.y, e.created_at
+    `SELECT e.id, e.set_id, e.x, e.y, e.type, e.created_at
      FROM events e
      JOIN sets s ON e.set_id = s.id
      WHERE s.match_id = ?

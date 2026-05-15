@@ -6,6 +6,7 @@ export type CourtEvent = {
   id: string;
   x: number;
   y: number;
+  type?: string;
 };
 
 type Props = {
@@ -81,91 +82,97 @@ export function Court({
     <div className="w-full">
       <div
         ref={containerRef}
-        className="relative aspect-square w-full max-w-sm cursor-crosshair overflow-hidden rounded-3xl bg-[#256c3a] p-4 shadow-lg"
+        className="relative aspect-square w-full max-w-sm cursor-crosshair overflow-hidden bg-[#256c3a] p-4 shadow-lg"
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerLeave}
         onPointerMove={handlePointerMove}
       >
-        {/* Outer court rectangle */}
-        <div className="pointer-events-none absolute inset-4 rounded-2xl border-2 border-white bg-[#d28a3b]" />
+        {/* Actual bounded court area */}
+        <div className="pointer-events-none absolute bottom-[12%] left-[12%] right-[12%] top-[12%] border-2 border-t-[6px] border-white bg-[#d28a3b]">
+          <div className="absolute -top-[18px] left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-widest text-emerald-100">
+            Сээтэг
+          </div>
+          {/* Spike side split into 8 zones (4x2 grid) */}
+          <div
+            className="absolute inset-x-0 top-0"
+            style={{ height: "33.333%" }}
+          >
+            {/* Bottom spike line (3m) */}
+            <div className="absolute inset-x-0 bottom-0 h-px border-t border-white/80">
+              <span className="absolute left-[2%] bottom-0.5 text-[8px] font-medium uppercase tracking-wider text-amber-200/90">
+                Довтолгооны шугам
+              </span>
+            </div>
+            {/* Main horizontal to make 2 rows */}
+            <div className="absolute inset-x-0 top-1/2 h-px border-t border-white/70" />
+            
+            {/* Main verticals to make 3 columns */}
+            <div className="absolute inset-y-0 left-1/3 w-px border-l border-white/70" />
+            <div className="absolute inset-y-0 left-2/3 w-px border-l border-white/70" />
+            {/* Sub verticals to split each column into 2 (total 6 columns) */}
+            <div
+              className="absolute inset-y-0 w-px border-l border-dashed border-white/60"
+              style={{ left: "16.666%" }}
+            />
+            <div
+              className="absolute inset-y-0 w-px border-l border-dashed border-white/60"
+              style={{ left: "50%" }}
+            />
+            <div
+              className="absolute inset-y-0 w-px border-l border-dashed border-white/60"
+              style={{ left: "83.333%" }}
+            />
+            {/* Top main row numbers: 4, 3, 2 */}
+            {[
+              { n: 4, col: 0 },
+              { n: 3, col: 1 },
+              { n: 2, col: 2 },
+            ].map(({ n, col }) => (
+              <span
+                key={`top-zone-${n}`}
+                className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/80 bg-zinc-900/55 px-1.5 py-0.5 text-[9px] font-bold text-white"
+                style={{
+                  left: `${((col + 0.5) / 3) * 100}%`,
+                  top: "50%",
+                }}
+              >
+                {n}
+              </span>
+            ))}
+            {/* First row letters: A B A B A B */}
+            {["A", "B", "A", "B", "A", "B"].map((label, col) => (
+              <span
+                key={`top-row-letter-${col}`}
+                className="absolute -translate-x-1/2 -translate-y-1/2 text-[9px] font-semibold text-white/85"
+                style={{
+                  left: `${((col + 0.5) / 6) * 100}%`,
+                  top: "25%",
+                }}
+              >
+                {label}
+              </span>
+            ))}
+            {/* Second row letters: C D C D C D */}
+            {["C", "D", "C", "D", "C", "D"].map((label, col) => (
+              <span
+                key={`top-row-2-letter-${col}`}
+                className="absolute -translate-x-1/2 -translate-y-1/2 text-[9px] font-semibold text-white/85"
+                style={{
+                  left: `${((col + 0.5) / 6) * 100}%`,
+                  top: "75%",
+                }}
+              >
+                {label}
+              </span>
+            ))}
+          </div>
 
-        {/* Spike side split into 8 zones (4x2 grid) */}
-        <div
-          className="pointer-events-none absolute inset-x-4 top-4"
-          style={{ height: "33.333%" }}
-        >
-          {/* Bottom spike line (3m) */}
-          <div className="absolute inset-x-0 bottom-0 h-px border-t border-white/80" />
-          {/* Main horizontal to make 2 rows */}
-          <div className="absolute inset-x-0 top-1/2 h-px border-t border-white/70" />
-          {/* Sub horizontals to split each row into 2 (total 4 rows) */}
-          {/* Main verticals to make 3 columns */}
-          <div className="absolute inset-y-0 left-1/3 w-px border-l border-white/70" />
-          <div className="absolute inset-y-0 left-2/3 w-px border-l border-white/70" />
-          {/* Sub verticals to split each column into 2 (total 6 columns) */}
+          {/* Defense side split into 6 zones (3x2 grid), each further 2x2 (4 sub-zones) */}
           <div
-            className="absolute inset-y-0 w-px border-l border-dashed border-white/60"
-            style={{ left: "16.666%" }}
-          />
-          <div
-            className="absolute inset-y-0 w-px border-l border-dashed border-white/60"
-            style={{ left: "50%" }}
-          />
-          <div
-            className="absolute inset-y-0 w-px border-l border-dashed border-white/60"
-            style={{ left: "83.333%" }}
-          />
-          {/* Top main row numbers: 1-3 */}
-          {[
-            { n: 1, col: 0 },
-            { n: 2, col: 1 },
-            { n: 3, col: 2 },
-          ].map(({ n, col }) => (
-            <span
-              key={`top-zone-${n}`}
-              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/80 bg-zinc-900/55 px-1.5 py-0.5 text-[9px] font-bold text-white"
-              style={{
-                left: `${((col + 0.5) / 3) * 100}%`,
-                top: "50%",
-              }}
-            >
-              {n}
-            </span>
-          ))}
-          {/* First row letters: A B A B A B */}
-          {["A", "B", "A", "B", "A", "B"].map((label, col) => (
-            <span
-              key={`top-row-letter-${col}`}
-              className="absolute -translate-x-1/2 -translate-y-1/2 text-[9px] font-semibold text-white/85"
-              style={{
-                left: `${((col + 0.5) / 6) * 100}%`,
-                top: "25%",
-              }}
-            >
-              {label}
-            </span>
-          ))}
-          {/* Second row letters: C D C D C D */}
-          {["C", "D", "C", "D", "C", "D"].map((label, col) => (
-            <span
-              key={`top-row-2-letter-${col}`}
-              className="absolute -translate-x-1/2 -translate-y-1/2 text-[9px] font-semibold text-white/85"
-              style={{
-                left: `${((col + 0.5) / 6) * 100}%`,
-                top: "75%",
-              }}
-            >
-              {label}
-            </span>
-          ))}
-        </div>
-
-        {/* Defense side split into 6 zones (3x2 grid), each further 2x2 (4 sub-zones) */}
-        <div
-          className="pointer-events-none absolute inset-x-4 bottom-4"
-          style={{ top: "38.333%" }}
-        >
+            className="absolute inset-x-0 bottom-0"
+            style={{ top: "33.333%" }}
+          >
           {/* Main horizontal to make 2 rows */}
           <div className="absolute inset-x-0 top-1/2 h-px border-t border-white/70" />
           {/* Sub horizontals to split each row into 2 (total 4 rows) */}
@@ -212,14 +219,14 @@ export function Court({
               );
             }),
           )}
-          {/* Main zone numbers: top row 1-3, bottom row 4-6 */}
+          {/* Main zone numbers: middle row 7-9, bottom row 5, 6, 1 */}
           {[
-            { n: 1, col: 0, row: 0 },
-            { n: 2, col: 1, row: 0 },
-            { n: 3, col: 2, row: 0 },
-            { n: 4, col: 0, row: 1 },
-            { n: 5, col: 1, row: 1 },
-            { n: 6, col: 2, row: 1 },
+            { n: 7, col: 0, row: 0 },
+            { n: 8, col: 1, row: 0 },
+            { n: 9, col: 2, row: 0 },
+            { n: 5, col: 0, row: 1 },
+            { n: 6, col: 1, row: 1 },
+            { n: 1, col: 2, row: 1 },
           ].map(({ n, col, row }) => (
             <span
               key={`zone-${n}`}
@@ -232,6 +239,8 @@ export function Court({
               {n}
             </span>
           ))}
+        </div>
+        {/* End of Actual bounded court area */}
         </div>
 
         {showHeatmap && events.length > 0 && (
@@ -246,7 +255,11 @@ export function Court({
             <div key={event.id} className="absolute" style={{ left, top }}>
               <button
                 type="button"
-                className="absolute left-1/2 top-1/2 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-[radial-gradient(circle_at_30%_20%,#ffffff,rgba(254,249,195,0.95)_40%,#f97316_75%,#ea580c_95%)] shadow-[0_0_0_1px_rgba(0,0,0,0.25),0_4px_8px_rgba(0,0,0,0.55)]"
+                className={`absolute left-1/2 top-1/2 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 shadow-[0_0_0_1px_rgba(0,0,0,0.25),0_4px_8px_rgba(0,0,0,0.55)] ${
+                  event.type === "Set"
+                    ? "bg-[radial-gradient(circle_at_30%_20%,#ffffff,rgba(224,242,254,0.95)_40%,#0ea5e9_75%,#0284c7_95%)]"
+                    : "bg-[radial-gradient(circle_at_30%_20%,#ffffff,rgba(254,249,195,0.95)_40%,#f97316_75%,#ea580c_95%)]"
+                }`}
                 onPointerDown={(e) => {
                   e.stopPropagation();
                   dragFromButtonRef.current = true;

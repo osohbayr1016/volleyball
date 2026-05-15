@@ -100,6 +100,7 @@ export async function createEvent(
   setId: string,
   x: number,
   y: number,
+  type: string,
 ): Promise<EventPoint> {
   const url = buildUrl(`/api/sets/${setId}/events`);
   const res = await fetch(url, {
@@ -107,7 +108,7 @@ export async function createEvent(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ x, y }),
+    body: JSON.stringify({ x, y, type }),
   });
 
   const data = await handleResponse<{ event: EventPoint }>(res);

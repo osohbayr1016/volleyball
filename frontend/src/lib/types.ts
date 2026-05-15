@@ -17,6 +17,7 @@ export type EventPoint = {
   setId: string;
   x: number;
   y: number;
+  type: string;
   createdAt: number;
 };
 

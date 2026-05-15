@@ -103,6 +103,10 @@ export function CourtHeatmap({ events, onSnapshot }: CourtHeatmapProps) {
           // copy heatmap
           sctx.putImageData(imageData, 0, 0);
 
+          const M = 0.12;
+          const mx = (v: number) => M + v * (1 - 2 * M);
+          const my = (v: number) => M + v * (1 - 2 * M);
+
           const drawLine = (
             x1: number,
             y1: number,
@@ -119,8 +123,8 @@ export function CourtHeatmap({ events, onSnapshot }: CourtHeatmapProps) {
               sctx.setLineDash([]);
             }
             sctx.beginPath();
-            sctx.moveTo(x1 * w, y1 * h);
-            sctx.lineTo(x2 * w, y2 * h);
+            sctx.moveTo(mx(x1) * w, my(y1) * h);
+            sctx.lineTo(mx(x2) * w, my(y2) * h);
             sctx.stroke();
             sctx.restore();
           };

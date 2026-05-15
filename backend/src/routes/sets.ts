@@ -22,7 +22,7 @@ sets.get("/:setId", async (c) => {
   }
 
   const eventsResult = await c.env.DB.prepare(
-    `SELECT id, set_id, x, y, created_at
+    `SELECT id, set_id, x, y, type, created_at
      FROM events
      WHERE set_id = ?
      ORDER BY created_at ASC`,
@@ -66,12 +66,13 @@ sets.post("/:setId/events", async (c) => {
 
   const id = crypto.randomUUID();
   const now = Date.now();
+  const type = body.type === "Set" ? "Set" : "Spike";
 
   await c.env.DB.prepare(
-    `INSERT INTO events (id, set_id, x, y, created_at)
-     VALUES (?, ?, ?, ?, ?)`,
+    `INSERT INTO events (id, set_id, x, y, type, created_at)
+     VALUES (?, ?, ?, ?, ?, ?)`,
   )
-    .bind(id, setId, body.x, body.y, now)
+    .bind(id, setId, body.x, body.y, type, now)
     .run();
 
   const event: Event = {
@@ -79,6 +80,7 @@ sets.post("/:setId/events", async (c) => {
     setId,
     x: body.x,
     y: body.y,
+    type,
     createdAt: now,
   };
 

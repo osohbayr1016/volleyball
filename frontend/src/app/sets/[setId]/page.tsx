@@ -40,7 +40,7 @@ export default function SetPage() {
       });
   }, [setId]);
 
-  const handleAdd = async (x: number, y: number) => {
+  const handleAdd = async (x: number, y: number, type: string) => {
     if (!setId) return;
     setSaving(true);
     setError(null);
@@ -54,11 +54,12 @@ export default function SetPage() {
         setId,
         x,
         y,
+        type,
         createdAt: Date.now(),
       };
 
       setEvents((prev) => [...prev, optimistic]);
-      const created = await createEvent(setId, x, y);
+      const created = await createEvent(setId, x, y, type);
       setEvents((prev) =>
         prev.map((e) => (e.id === optimisticId ? created : e)),
       );

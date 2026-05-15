@@ -8,7 +8,7 @@ type Props = {
   loading: boolean;
   saving: boolean;
   error: string | null;
-  onAdd: (x: number, y: number) => void;
+  onAdd: (x: number, y: number, type: string) => void;
   onMove: (id: string, x: number, y: number) => void;
   onDelete: (id: string) => void;
   onClearAll: () => void;
@@ -29,6 +29,13 @@ export function SetWorkspace({
   const total = events.length;
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [heatmapUrl, setHeatmapUrl] = useState<string | null>(null);
+  const [attackType, setAttackType] = useState<"Spike" | "Set">("Spike");
+  const [analysisFilter, setAnalysisFilter] = useState<"All" | "Spike" | "Set">("All");
+
+  const displayedEvents =
+    showAnalysis && analysisFilter !== "All"
+      ? events.filter((e) => e.type === analysisFilter)
+      : events;
 
   return (
     <>
@@ -79,18 +86,63 @@ export function SetWorkspace({
           {loading ? (
             <p className="text-xs text-zinc-400">Ачааллаж байна...</p>
           ) : (
-            <Court
-              events={events.map((e) => ({
-                id: e.id,
-                x: e.x,
-                y: e.y,
-              }))}
-              onAdd={onAdd}
-              onMove={onMove}
-              onDelete={onDelete}
-              showHeatmap={showAnalysis}
-              onHeatmapSnapshot={setHeatmapUrl}
-            />
+            <div className="space-y-4">
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setAttackType("Spike")}
+                  className={`rounded-full px-4 py-1.5 text-[11px] font-medium transition-colors ${
+                    attackType === "Spike"
+                      ? "bg-emerald-500 text-zinc-950 shadow-sm shadow-emerald-500/40"
+                      : "bg-zinc-800 text-zinc-400 hover:text-zinc-200"
+                  }`}
+                >
+                  Spike
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAttackType("Set")}
+                  className={`rounded-full px-4 py-1.5 text-[11px] font-medium transition-colors ${
+                    attackType === "Set"
+                      ? "bg-emerald-500 text-zinc-950 shadow-sm shadow-emerald-500/40"
+                      : "bg-zinc-800 text-zinc-400 hover:text-zinc-200"
+                  }`}
+                >
+                  serve
+                </button>
+              </div>
+              {showAnalysis && (
+                <div className="flex justify-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/50 p-1.5 mx-auto w-fit mb-2 mt-4">
+                  {(["All", "Spike", "Set"] as const).map((f) => (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setAnalysisFilter(f)}
+                      className={`px-4 py-1 rounded-lg text-[11px] font-medium transition-colors ${
+                        analysisFilter === f
+                          ? "bg-zinc-700 text-zinc-100"
+                          : "text-zinc-500 hover:text-zinc-300"
+                      }`}
+                    >
+                      {f === "All" ? "Бүгд" : f}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <Court
+                events={displayedEvents.map((e) => ({
+                  id: e.id,
+                  x: e.x,
+                  y: e.y,
+                  type: e.type,
+                }))}
+                onAdd={(x, y) => onAdd(x, y, attackType)}
+                onMove={onMove}
+                onDelete={onDelete}
+                showHeatmap={showAnalysis}
+                onHeatmapSnapshot={setHeatmapUrl}
+              />
+            </div>
           )}
         </div>
 
